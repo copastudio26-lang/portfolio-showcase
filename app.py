@@ -18,19 +18,28 @@ from flask import (
 #   🔑 API KEYS — Replace these with your real keys
 # ══════════════════════════════════════════════════════════════
 
-GITHUB_TOKEN         = "YOUR_GITHUB_TOKEN_HERE"          # github.com → Settings → Developer Settings
-GITHUB_USERNAME      = "YOUR_GITHUB_USERNAME"             # e.g. "ajay123"
+import os
+from flask import Flask, render_template
 
-CLOUDINARY_CLOUD     = "YOUR_CLOUDINARY_CLOUD_NAME"      # e.g. "dvbpzyhuu"
-CLOUDINARY_API_KEY   = "YOUR_CLOUDINARY_API_KEY"         # e.g. "671355172438532"
-CLOUDINARY_SECRET    = "YOUR_CLOUDINARY_API_SECRET"      # from Cloudinary dashboard
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-key-ajay-2026')
 
-EMAILJS_SERVICE_ID   = "YOUR_EMAILJS_SERVICE_ID"         # e.g. "service_xxxxxx"
-EMAILJS_TEMPLATE_ID  = "YOUR_EMAILJS_TEMPLATE_ID"        # e.g. "template_xxxxxx"
-EMAILJS_PUBLIC_KEY   = "YOUR_EMAILJS_PUBLIC_KEY"         # e.g. "3OKGIOOgYTW4pC-9O"
+# Configuration for API Services
+EMAILJS_SERVICE_ID = "service_iwf9j7a"
+EMAILJS_TEMPLATE_ID = "template_1frvmnc"
+EMAILJS_PUBLIC_KEY = "3OKGIOOgYTW4pC-9O"
+GITHUB_API_TOKEN = "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"
+CLOUDINARY_CLOUD_NAME = "dvbpzyhuu"
+CLOUDINARY_API_KEY = "671355172438532"
+IPINFO_TOKEN = "149e98358432cb"
 
-IPINFO_TOKEN         = "YOUR_IPINFO_TOKEN"               # e.g. "149e98358432cb"
+@app.route('/')
+def index():
+    return render_template('index.html', emailjs_key=EMAILJS_PUBLIC_KEY)
 
+if __name__ == "__main__":
+    app.run(debug=True)
+    
 # ══════════════════════════════════════════════════════════════
 #   App Setup
 # ══════════════════════════════════════════════════════════════
