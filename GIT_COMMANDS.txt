@@ -1,0 +1,89 @@
+# 📋 GitHub par Portfolio Upload करने के Steps
+# (Copy-paste करो — एक एक command terminal में)
+
+# ════════════════════════════════════════
+# STEP 1: Git install check करो
+# ════════════════════════════════════════
+git --version
+# अगर नहीं है: https://git-scm.com/downloads से install करो
+
+# ════════════════════════════════════════
+# STEP 2: GitHub पर नया Repo बनाओ
+# ════════════════════════════════════════
+# 1. github.com पर जाओ → Login करो
+# 2. "+" button → "New repository"
+# 3. Repository name: ajay-portfolio
+# 4. Description: Personal Portfolio & Project Showcase
+# 5. Public select करो ✅
+# 6. README add मत करो (हमारे पास already है)
+# 7. "Create repository" click करो
+
+# ════════════════════════════════════════
+# STEP 3: Portfolio folder में जाओ
+# ════════════════════════════════════════
+cd path/to/portfolio
+# Example Windows: cd C:\Users\Ajay\Desktop\portfolio
+# Example Linux:   cd ~/Desktop/portfolio
+
+# ════════════════════════════════════════
+# STEP 4: Git setup (पहली बार सिर्फ एक बार)
+# ════════════════════════════════════════
+git config --global user.name "Ajay"
+git config --global user.email "your-email@gmail.com"
+
+# ════════════════════════════════════════
+# STEP 5: Git initialize करो
+# ════════════════════════════════════════
+git init
+git add .
+git commit -m "🚀 First commit: Ajay Portfolio Project"
+
+# ════════════════════════════════════════
+# STEP 6: GitHub repo से connect करो
+# ════════════════════════════════════════
+# नीचे YOUR_USERNAME की जगह अपना GitHub username डालो
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/ajay-portfolio.git
+
+# ════════════════════════════════════════
+# STEP 7: Upload (Push) करो
+# ════════════════════════════════════════
+git push -u origin main
+# GitHub username और password/token माँगेगा → डालो
+
+# ════════════════════════════════════════
+# ✅ Done! Check करो:
+# https://github.com/YOUR_USERNAME/ajay-portfolio
+# ════════════════════════════════════════
+
+
+# ════════════════════════════════════════
+# FUTURE UPDATES — जब भी code change करो
+# ════════════════════════════════════════
+git add .
+git commit -m "Update: project XYZ add किया"
+git push
+# Render पर automatically re-deploy हो जाएगा! ✨
+
+
+# ════════════════════════════════════════
+# COMMON ERRORS & SOLUTIONS
+# ════════════════════════════════════════
+
+# ERROR: "remote origin already exists"
+# SOLUTION:
+git remote remove origin
+git remote add origin https://github.com/YOUR_USERNAME/ajay-portfolio.git
+
+# ERROR: "src refspec main does not match any"
+# SOLUTION:
+git add .
+git commit -m "initial commit"
+git push -u origin main
+
+# ERROR: Password authentication failed
+# SOLUTION: GitHub अब password नहीं लेता, Token चाहिए
+# github.com → Settings → Developer Settings
+# → Personal Access Tokens → Tokens (classic) → Generate new token
+# Scope में "repo" check करो → Generate → Copy token
+# Password की जगह यह token paste करो

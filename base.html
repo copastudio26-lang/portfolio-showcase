@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" id="html-root">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Ajay — Dev Portfolio{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: '#7C3AED',      /* violet-600 */
+            accentLight: '#A78BFA', /* violet-400 */
+            surface: '#0F0F1A',
+            card: '#1A1A2E',
+            border: '#2D2D4A',
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],
+            sans: ['"Inter"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-surface text-gray-100 font-sans antialiased transition-colors duration-300" id="body-root">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="{{ url_for('index') }}" class="font-mono font-bold text-lg text-accentLight tracking-tight">
+        <span class="text-accent">&gt;</span> ajay.dev
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="{{ url_for('index') }}" class="text-sm text-gray-400 hover:text-white transition">Home</a>
+        <a href="{{ url_for('index') }}#projects" class="text-sm text-gray-400 hover:text-white transition">Projects</a>
+        <a href="{{ url_for('index') }}#about" class="text-sm text-gray-400 hover:text-white transition">About</a>
+        {% if session.get('admin_logged_in') %}
+          <a href="{{ url_for('admin_dashboard') }}" class="text-sm bg-accent text-white px-3 py-1.5 rounded-md hover:bg-purple-700 transition">Dashboard</a>
+          <a href="{{ url_for('admin_logout') }}" class="text-sm text-gray-400 hover:text-red-400 transition">Logout</a>
+        {% else %}
+          <a href="{{ url_for('admin_login') }}" class="text-sm text-gray-500 hover:text-gray-300 transition">Admin</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-20 right-4 z-50 space-y-2">
+        {% for cat, msg in messages %}
+          <div class="flash-msg px-4 py-3 rounded-lg text-sm font-medium shadow-lg
+            {% if cat == 'success' %}bg-green-600 text-white
+            {% elif cat == 'info' %}bg-blue-600 text-white
+            {% else %}bg-red-600 text-white{% endif %}">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Page Content -->
+  <main class="pt-16">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-border mt-24 py-10 text-center text-gray-500 text-sm font-mono">
+    <p>Built with ❤️ by Ajay &nbsp;·&nbsp; Flask + Tailwind</p>
+    <p class="mt-1 text-xs text-gray-600">© 2026 All rights reserved</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

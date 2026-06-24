@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Project — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-8">
+    <a href="{{ url_for('admin_dashboard') }}" class="text-gray-500 hover:text-white transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold">{{ action }} Project</h1>
+      <p class="text-gray-500 text-sm font-mono">{{ 'Create a new project entry' if action == 'Add' else 'Update project details' }}</p>
+    </div>
+  </div>
+
+  <div id="project-form-data" class="space-y-6">
+
+    <!-- Basic Info -->
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-5">
+      <h2 class="font-semibold text-gray-200 flex items-center gap-2">
+        <span class="text-accent font-mono">01</span> Basic Information
+      </h2>
+
+      <div>
+        <label class="label">Project Title *</label>
+        <input type="text" id="f-title" required
+          value="{{ project.title if project else '' }}"
+          placeholder="e.g. Python Termux Toolkit"
+          class="input-field">
+      </div>
+
+      <div>
+        <label class="label">Short Description *</label>
+        <input type="text" id="f-description"
+          value="{{ project.description if project else '' }}"
+          placeholder="One-line summary shown on project cards"
+          class="input-field">
+      </div>
+
+      <div>
+        <label class="label">Full Description</label>
+        <textarea id="f-full_desc" rows="5" placeholder="Detailed explanation of the project, features, use cases..."
+          class="input-field resize-none">{{ project.full_desc if project else '' }}</textarea>
+      </div>
+
+      <div>
+        <label class="label">Tags / Technologies <span class="text-gray-500 font-normal">(comma separated)</span></label>
+        <input type="text" id="f-tags"
+          value="{{ project.tags_str if project else '' }}"
+          placeholder="Python, Flask, Bash, Cybersecurity"
+          class="input-field">
+      </div>
+    </div>
+
+    <!-- Installation Steps -->
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <h2 class="font-semibold text-gray-200 flex items-center gap-2">
+        <span class="text-accent font-mono">02</span> Installation Steps
+      </h2>
+      <p class="text-xs text-gray-500 font-mono">Enter one step per line. They'll be numbered automatically.</p>
+      <textarea id="f-steps" rows="6"
+        placeholder="Clone the repository&#10;Install dependencies: pip install -r requirements.txt&#10;Run: python app.py&#10;Open http://localhost:5000"
+        class="input-field resize-none font-mono text-sm">{{ project.steps_str if project else '' }}</textarea>
+    </div>
+
+    <!-- Code Preview -->
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <h2 class="font-semibold text-gray-200 flex items-center gap-2">
+        <span class="text-accent font-mono">03</span> Code Preview
+      </h2>
+      <p class="text-xs text-gray-500 font-mono">Paste a snippet of your code (shown as read-only on the project page).</p>
+      <textarea id="f-code_preview" rows="10"
+        placeholder="# Paste your main code snippet here..."
+        class="input-field resize-y font-mono text-sm leading-relaxed">{{ project.code_preview if project else '' }}</textarea>
+    </div>
+
+    <!-- Files Upload -->
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-5">
+      <h2 class="font-semibold text-gray-200 flex items-center gap-2">
+        <span class="text-accent font-mono">04</span> File Uploads
+      </h2>
+
+      <div>
+        <label class="label">Source Code (.zip / .tar.gz)</label>
+        {% if project and project.zip_file %}
+        <p class="text-xs text-green-400 font-mono mb-2">✓ Current file: {{ project.zip_file }}</p>
+        {% endif %}
+        <div class="upload-zone" id="zip-zone" onclick="document.getElementById('f-zip').click()">
+          <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          <p class="text-sm text-gray-400">Click to upload ZIP file</p>
+          <p class="text-xs text-gray-600 mt-1" id="zip-name">Max 50 MB</p>
+        </div>
+        <input type="file" id="f-zip" accept=".zip,.tar,.gz" class="hidden" onchange="showFileName('f-zip','zip-name')">
+      </div>
+
+      <div>
+        <label class="label">Thumbnail Image</label>
+        {% if project and project.thumbnail %}
+        <p class="text-xs text-green-400 font-mono mb-2">✓ Current image: {{ project.thumbnail }}</p>
+        {% endif %}
+        <div class="upload-zone" id="thumb-zone" onclick="document.getElementById('f-thumb').click()">
+          <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <p class="text-sm text-gray-400">Click to upload thumbnail</p>
+          <p class="text-xs text-gray-600 mt-1" id="thumb-name">PNG, JPG, WebP</p>
+        </div>
+        <input type="file" id="f-thumb" accept="image/*" class="hidden" onchange="showFileName('f-thumb','thumb-name');previewThumb()">
+        <img id="thumb-preview" class="hidden mt-3 h-32 rounded-xl object-cover border border-border" alt="Preview">
+      </div>
+    </div>
+
+    <!-- Links -->
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <h2 class="font-semibold text-gray-200 flex items-center gap-2">
+        <span class="text-accent font-mono">05</span> External Links
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="label">GitHub URL</label>
+          <input type="url" id="f-github_url" value="{{ project.github_url if project else '' }}"
+            placeholder="https://github.com/ajay/..."
+            class="input-field">
+        </div>
+        <div>
+          <label class="label">YouTube Video URL</label>
+          <input type="url" id="f-youtube_url" value="{{ project.youtube_url if project else '' }}"
+            placeholder="https://youtube.com/watch?v=..."
+            class="input-field">
+        </div>
+        <div>
+          <label class="label">Live Demo URL</label>
+          <input type="url" id="f-live_url" value="{{ project.live_url if project else '' }}"
+            placeholder="https://myproject.vercel.app"
+            class="input-field">
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex gap-4">
+      <button onclick="submitForm()" class="btn-primary flex-1 text-center py-3">
+        {{ '+ Add Project' if action == 'Add' else 'Save Changes' }}
+      </button>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn-secondary px-6 py-3">Cancel</a>
+    </div>
+  </div>
+
+  <!-- Hidden real form -->
+  <form id="real-form" method="POST" enctype="multipart/form-data" style="display:none">
+    <input type="hidden" name="title"        id="h-title">
+    <input type="hidden" name="description"  id="h-description">
+    <input type="hidden" name="full_desc"    id="h-full_desc">
+    <input type="hidden" name="tags"         id="h-tags">
+    <input type="hidden" name="steps"        id="h-steps">
+    <input type="hidden" name="code_preview" id="h-code_preview">
+    <input type="hidden" name="youtube_url"  id="h-youtube_url">
+    <input type="hidden" name="github_url"   id="h-github_url">
+    <input type="hidden" name="live_url"     id="h-live_url">
+    <!-- File inputs need to be inside the form -->
+    <input type="file" name="zip_file"  id="real-zip"   accept=".zip,.tar,.gz">
+    <input type="file" name="thumbnail" id="real-thumb"  accept="image/*">
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showFileName(inputId, labelId) {
+  const file = document.getElementById(inputId).files[0];
+  if (file) document.getElementById(labelId).textContent = '✓ ' + file.name;
+}
+function previewThumb() {
+  const file = document.getElementById('f-thumb').files[0];
+  if (!file) return;
+  const img = document.getElementById('thumb-preview');
+  img.src = URL.createObjectURL(file);
+  img.classList.remove('hidden');
+}
+
+async function submitForm() {
+  // Copy text fields to hidden form
+  const fields = ['title','description','full_desc','tags','steps','code_preview','youtube_url','github_url','live_url'];
+  fields.forEach(f => {
+    document.getElementById('h-'+f).value = document.getElementById('f-'+f).value;
+  });
+
+  // Transfer files using DataTransfer
+  const zipInput = document.getElementById('f-zip');
+  const realZip  = document.getElementById('real-zip');
+  if (zipInput.files[0]) {
+    const dt = new DataTransfer();
+    dt.items.add(zipInput.files[0]);
+    realZip.files = dt.files;
+  }
+  const thumbInput = document.getElementById('f-thumb');
+  const realThumb  = document.getElementById('real-thumb');
+  if (thumbInput.files[0]) {
+    const dt = new DataTransfer();
+    dt.items.add(thumbInput.files[0]);
+    realThumb.files = dt.files;
+  }
+
+  document.getElementById('real-form').submit();
+}
+</script>
+{% endblock %}

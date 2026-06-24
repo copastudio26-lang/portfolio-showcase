@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <div class="flex items-center gap-4 mb-8">
+    <a href="{{ url_for('admin_dashboard') }}" class="text-gray-500 hover:text-white transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold">Edit Profile</h1>
+      <p class="text-gray-500 text-sm font-mono">Update your public portfolio info</p>
+    </div>
+  </div>
+
+  <form method="POST" class="space-y-6">
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <div>
+        <label class="label">Display Name</label>
+        <input type="text" name="name" value="{{ profile.name }}" class="input-field">
+      </div>
+      <div>
+        <label class="label">Tagline</label>
+        <input type="text" name="tagline" value="{{ profile.tagline }}" placeholder="Developer · Hacker · Builder" class="input-field">
+      </div>
+      <div>
+        <label class="label">Bio</label>
+        <textarea name="bio" rows="4" class="input-field resize-none">{{ profile.bio }}</textarea>
+      </div>
+      <div>
+        <label class="label">Skills <span class="text-gray-500 font-normal">(comma separated)</span></label>
+        <input type="text" name="skills" value="{{ profile.skills_str }}" placeholder="Python, C, Bash, Flask" class="input-field">
+      </div>
+    </div>
+
+    <div class="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <h2 class="font-semibold text-gray-200">Social Links</h2>
+      <div>
+        <label class="label">GitHub</label>
+        <input type="url" name="github" value="{{ profile.social.github }}" placeholder="https://github.com/username" class="input-field">
+      </div>
+      <div>
+        <label class="label">YouTube</label>
+        <input type="url" name="youtube" value="{{ profile.social.youtube }}" placeholder="https://youtube.com/@channel" class="input-field">
+      </div>
+      <div>
+        <label class="label">Instagram</label>
+        <input type="url" name="instagram" value="{{ profile.social.instagram }}" placeholder="https://instagram.com/handle" class="input-field">
+      </div>
+      <div>
+        <label class="label">Facebook</label>
+        <input type="url" name="facebook" value="{{ profile.social.facebook }}" placeholder="https://facebook.com/page" class="input-field">
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <button type="submit" class="btn-primary flex-1 py-3">Save Profile</button>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn-secondary px-6 py-3">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

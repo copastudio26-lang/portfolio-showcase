@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Ajay Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-10">
+    <div>
+      <h1 class="text-3xl font-bold">Dashboard</h1>
+      <p class="text-gray-500 font-mono text-sm mt-1">Manage your portfolio content</p>
+    </div>
+    <div class="flex gap-3">
+      <!-- GitHub Sync Button -->
+      <form method="POST" action="{{ url_for('sync_github') }}">
+        <button type="submit" class="btn-secondary flex items-center gap-2 text-sm">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          Sync GitHub
+        </button>
+      </form>
+      <a href="{{ url_for('admin_new_project') }}" class="btn-primary flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Add Project
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+    <div class="bg-card border border-border rounded-xl p-5">
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-2">Total Projects</p>
+      <p class="text-3xl font-bold text-accentLight">{{ projects | length }}</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-5">
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-2">Total Downloads</p>
+      <p class="text-3xl font-bold text-green-400">{{ total_downloads }}</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-5">
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-2">Total Visitors</p>
+      <p class="text-3xl font-bold text-yellow-400">{{ total_visitors }}</p>
+      <a href="{{ url_for('admin_visitors') }}" class="text-xs text-accentLight hover:underline mt-1 block">View details →</a>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-5">
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-2">Quick Links</p>
+      <div class="space-y-1">
+        <a href="{{ url_for('admin_profile') }}" class="block text-xs text-accentLight hover:underline">✏️ Edit Profile</a>
+        <a href="{{ url_for('admin_visitors') }}" class="block text-xs text-accentLight hover:underline">📊 Visitor Analytics</a>
+        <a href="{{ url_for('index') }}" target="_blank" class="block text-xs text-accentLight hover:underline">🌐 Public Site</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Countries (IPinfo) -->
+  {% if top_countries %}
+  <div class="bg-card border border-border rounded-2xl p-5 mb-8">
+    <p class="text-xs font-mono text-gray-500 uppercase tracking-wider mb-4">Top Visitor Countries (IPinfo)</p>
+    <div class="flex flex-wrap gap-3">
+      {% for country, count in top_countries %}
+      <div class="bg-surface border border-border rounded-lg px-4 py-2 text-sm">
+        <span class="font-bold text-gray-200">{{ country }}</span>
+        <span class="text-gray-500 ml-2 font-mono text-xs">{{ count }} visits</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Projects Table -->
+  <div class="bg-card border border-border rounded-2xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <h2 class="font-semibold text-lg">All Projects</h2>
+      <span class="text-xs text-gray-500 font-mono">{{ projects | length }} total</span>
+    </div>
+
+    {% if projects %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-border text-gray-500 text-xs font-mono uppercase">
+            <th class="text-left px-6 py-3">Project</th>
+            <th class="text-left px-4 py-3 hidden md:table-cell">Tags</th>
+            <th class="text-center px-4 py-3">Downloads</th>
+            <th class="text-center px-4 py-3">Files</th>
+            <th class="text-right px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border">
+          {% for project in projects %}
+          <tr class="hover:bg-surface/50 transition">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                {% if project.thumbnail %}
+                <img src="{{ url_for('static', filename='uploads/thumbnails/' + project.thumbnail) }}"
+                     class="w-10 h-10 rounded-lg object-cover flex-shrink-0" alt="">
+                {% else %}
+                <div class="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center flex-shrink-0">
+                  <span class="font-mono text-xs text-gray-600">&lt;/&gt;</span>
+                </div>
+                {% endif %}
+                <div>
+                  <p class="font-medium text-gray-100">{{ project.title }}</p>
+                  <p class="text-xs text-gray-500 truncate max-w-xs">{{ project.description[:60] }}...</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-4 hidden md:table-cell">
+              <div class="flex flex-wrap gap-1">
+                {% for tag in project.tags[:3] %}
+                <span class="text-xs bg-accent/10 text-accentLight px-1.5 py-0.5 rounded font-mono">{{ tag }}</span>
+                {% endfor %}
+              </div>
+            </td>
+            <td class="px-4 py-4 text-center">
+              <span class="font-mono text-green-400">{{ project.downloads }}</span>
+            </td>
+            <td class="px-4 py-4 text-center">
+              <div class="flex justify-center gap-2">
+                {% if project.zip_file %}
+                <span class="text-xs bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded">ZIP</span>
+                {% endif %}
+                {% if project.youtube_url %}
+                <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded">YT</span>
+                {% endif %}
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{{ url_for('project_detail', pid=project.id) }}" target="_blank"
+                   class="text-xs text-gray-400 hover:text-accentLight px-2 py-1.5 rounded hover:bg-accent/10 transition">
+                  View
+                </a>
+                <a href="{{ url_for('admin_edit_project', pid=project.id) }}"
+                   class="text-xs text-gray-400 hover:text-accentLight px-2 py-1.5 rounded hover:bg-accent/10 transition">
+                  Edit
+                </a>
+                <button onclick="confirmDelete('{{ project.id }}', '{{ project.title | replace("'","\\'")}}')"
+                   class="text-xs text-red-400/70 hover:text-red-400 px-2 py-1.5 rounded hover:bg-red-500/10 transition">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-16 text-gray-500">
+      <p class="text-4xl mb-4 font-mono">&lt;empty&gt;</p>
+      <p class="mb-4">No projects yet.</p>
+      <a href="{{ url_for('admin_new_project') }}" class="btn-primary">Add First Project</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+  <div class="bg-card border border-border rounded-2xl p-8 max-w-sm w-full shadow-2xl">
+    <h3 class="text-xl font-bold mb-2">Delete Project?</h3>
+    <p class="text-gray-400 mb-6">Are you sure you want to delete <strong id="del-title" class="text-white"></strong>? This cannot be undone.</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 btn-secondary">Cancel</button>
+      <form id="delete-form" method="POST">
+        <button type="submit" class="bg-red-600 text-white px-6 py-2.5 rounded-lg hover:bg-red-700 transition font-medium">
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(pid, title) {
+  document.getElementById('del-title').textContent = title;
+  document.getElementById('delete-form').action = `/admin/project/${pid}/delete`;
+  document.getElementById('delete-modal').classList.remove('hidden');
+}
+function closeModal() {
+  document.getElementById('delete-modal').classList.add('hidden');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+/* ── Ajay Portfolio — style.css ── */
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(135deg, #A78BFA, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Grid background pattern */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(124, 58, 237, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #7C3AED;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary:hover { background-color: #6D28D9; transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #D1D5DB;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #2D2D4A;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-secondary:hover { border-color: #7C3AED; color: #A78BFA; }
+
+/* Social links */
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: #1A1A2E;
+  border: 1px solid #2D2D4A;
+  color: #9CA3AF;
+  transition: all 0.2s;
+}
+.social-link:hover { border-color: #7C3AED; color: #A78BFA; }
+
+/* Form elements */
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #D1D5DB;
+  margin-bottom: 0.5rem;
+}
+
+.input-field {
+  width: 100%;
+  background-color: #0F0F1A;
+  border: 1px solid #2D2D4A;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #E5E7EB;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-field:focus { border-color: #7C3AED; }
+.input-field::placeholder { color: #4B5563; }
+
+/* Upload zone */
+.upload-zone {
+  border: 2px dashed #2D2D4A;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-zone:hover { border-color: #7C3AED; background-color: rgba(124, 58, 237, 0.05); }
+
+/* Flash message animation */
+.flash-msg {
+  animation: slideIn 0.3s ease, fadeOut 0.4s ease 3.5s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
